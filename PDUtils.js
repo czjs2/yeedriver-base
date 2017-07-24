@@ -3,7 +3,7 @@
  */
 
 const _ = require('lodash');
-
+const memoryKeys = ["BI","BQ","BP","WI","WQ"];
 /**
  * 把一串配置信息变成寄存器事情的数组
  * @param cfgString 配置的id信息 如"1-10,15,16"这种类型
@@ -104,12 +104,14 @@ function ParseMemories (memories){
         {
             BI:CfgStringParser(memoryItem.BI || ""),
             BQ:CfgStringParser(memoryItem.BQ || ""),
+            BP:CfgStringParser(memoryItem.BP || ""),
             WI:CfgStringParser(memoryItem.WI || ""),
             WQ:CfgStringParser(memoryItem.WQ || "")
         };
 
         memoryInfo.BI_INFO = ArrayCalc(memoryInfo.BI);
         memoryInfo.BQ_INFO = ArrayCalc(memoryInfo.BQ);
+        memoryInfo.BP_INFO = ArrayCalc(memoryInfo.BP);
         memoryInfo.WI_INFO = ArrayCalc(memoryInfo.WI);
         memoryInfo.WQ_INFO = ArrayCalc(memoryInfo.WQ);
 
@@ -131,72 +133,101 @@ function ParseMemories (memories){
 function AddToMemories (originMemories,memoriesInfo,infoIsParsed){
     _.each(memoriesInfo,function(memoriesDef,memoryItem){
         var oldMemories = originMemories[memoryItem] || {};
-        var newMemories =   infoIsParsed?memoriesDef:{BI:CfgStringParser(memoriesDef.BI || ""),BQ:CfgStringParser(memoriesDef.BQ || ""),
-            WI:CfgStringParser(memoriesDef.WI || ""),WQ:CfgStringParser(memoriesDef.WQ || "")}
+        var newMemories =   infoIsParsed?memoriesDef:
+            {
+                BI:CfgStringParser(memoriesDef.BI || ""),
+                BQ:CfgStringParser(memoriesDef.BQ || ""),
+                BP:CfgStringParser(memoriesDef.BP || ""),
+                WI:CfgStringParser(memoriesDef.WI || ""),
+                WQ:CfgStringParser(memoriesDef.WQ || "")
+            };
 
-        _.each(newMemories.BI,function(regNum){
-            if(!oldMemories.BI_INFO){
-                oldMemories.BI_INFO = {};
-            }
-            if(!oldMemories.BI){
-                oldMemories.BI = [];
-            }
+        _.each(newMemories,(item,key)=>{
+            _.each(item,(regNum)=>{
+                let infoKey = key+'_INFO';
+                if(!oldMemories[infoKey]){
+                    oldMemories[infoKey] = {};
+                }
+                if(!oldMemories[key]){
+                    oldMemories[key] = [];
+                }
 
-            if(oldMemories.BI_INFO[regNum]){
-                oldMemories.BI_INFO[regNum]++;
-            }else{
-                oldMemories.BI_INFO[regNum] = 1;
-                oldMemories.BI.push(regNum);
-            }
+                if(oldMemories[infoKey][regNum]){
+                    oldMemories[infoKey][regNum]++;
+                }else{
+                    oldMemories[infoKey][regNum] = 1;
+                    oldMemories[key].push(regNum);
+                }
+            });
         });
 
-        _.each(newMemories.BQ,function(regNum){
-            if(!oldMemories.BQ_INFO){
-                oldMemories.BQ_INFO = {};
-            }
-            if(!oldMemories.BQ){
-                oldMemories.BQ = [];
-            }
-            if(oldMemories.BQ_INFO[regNum]){
-                oldMemories.BQ_INFO[regNum]++;
-            }else{
-                oldMemories.BQ_INFO[regNum] = 1;
-                oldMemories.BQ.push(regNum);
-            }
-        });
-        _.each(newMemories.WI,function(regNum){
-            if(!oldMemories.WI_INFO){
-                oldMemories.WI_INFO = {};
-            }
-            if(!oldMemories.WI){
-                oldMemories.WI = [];
-            }
-            if(oldMemories.WI_INFO[regNum]){
-                oldMemories.WI_INFO[regNum]++;
-            }else{
-                oldMemories.WI_INFO[regNum] = 1;
-                oldMemories.WI.push(regNum);
-            }
-        });
-        _.each(newMemories.WQ,function(regNum){
-            if(!oldMemories.WQ_INFO){
-                oldMemories.WQ_INFO = {};
-            }
-            if(!oldMemories.WQ){
-                oldMemories.WQ = [];
-            }
-            if(oldMemories.WQ_INFO[regNum]){
-                oldMemories.WQ_INFO[regNum]++;
-            }else{
-                oldMemories.WQ_INFO[regNum] = 1;
-                oldMemories.WQ.push(regNum);
-            }
+        _.each(memoryKeys,(key)=>{
+            oldMemories[key] = _.sortBy( oldMemories[key]);
         });
 
-        oldMemories.BI = _.sortBy( oldMemories.BI);
-        oldMemories.BQ = _.sortBy( oldMemories.BQ);
-        oldMemories.WI = _.sortBy( oldMemories.WI);
-        oldMemories.WQ = _.sortBy( oldMemories.WQ);
+        // _.each(newMemories.BI,function(regNum){
+        //     if(!oldMemories.BI_INFO){
+        //         oldMemories.BI_INFO = {};
+        //     }
+        //     if(!oldMemories.BI){
+        //         oldMemories.BI = [];
+        //     }
+        //
+        //     if(oldMemories.BI_INFO[regNum]){
+        //         oldMemories.BI_INFO[regNum]++;
+        //     }else{
+        //         oldMemories.BI_INFO[regNum] = 1;
+        //         oldMemories.BI.push(regNum);
+        //     }
+        // });
+        //
+        // _.each(newMemories.BQ,function(regNum){
+        //     if(!oldMemories.BQ_INFO){
+        //         oldMemories.BQ_INFO = {};
+        //     }
+        //     if(!oldMemories.BQ){
+        //         oldMemories.BQ = [];
+        //     }
+        //     if(oldMemories.BQ_INFO[regNum]){
+        //         oldMemories.BQ_INFO[regNum]++;
+        //     }else{
+        //         oldMemories.BQ_INFO[regNum] = 1;
+        //         oldMemories.BQ.push(regNum);
+        //     }
+        // });
+        // _.each(newMemories.WI,function(regNum){
+        //     if(!oldMemories.WI_INFO){
+        //         oldMemories.WI_INFO = {};
+        //     }
+        //     if(!oldMemories.WI){
+        //         oldMemories.WI = [];
+        //     }
+        //     if(oldMemories.WI_INFO[regNum]){
+        //         oldMemories.WI_INFO[regNum]++;
+        //     }else{
+        //         oldMemories.WI_INFO[regNum] = 1;
+        //         oldMemories.WI.push(regNum);
+        //     }
+        // });
+        // _.each(newMemories.WQ,function(regNum){
+        //     if(!oldMemories.WQ_INFO){
+        //         oldMemories.WQ_INFO = {};
+        //     }
+        //     if(!oldMemories.WQ){
+        //         oldMemories.WQ = [];
+        //     }
+        //     if(oldMemories.WQ_INFO[regNum]){
+        //         oldMemories.WQ_INFO[regNum]++;
+        //     }else{
+        //         oldMemories.WQ_INFO[regNum] = 1;
+        //         oldMemories.WQ.push(regNum);
+        //     }
+        // });
+        //
+        // oldMemories.BI = _.sortBy( oldMemories.BI);
+        // oldMemories.BQ = _.sortBy( oldMemories.BQ);
+        // oldMemories.WI = _.sortBy( oldMemories.WI);
+        // oldMemories.WQ = _.sortBy( oldMemories.WQ);
         originMemories[memoryItem] = oldMemories;
     })
 
@@ -210,53 +241,73 @@ function AddToMemories (originMemories,memoriesInfo,infoIsParsed){
 function delFromMemories(originMemories,memoriesInfo,infoIsParsed){
     _.each(memoriesInfo,function(memoriesDef,memoryItem) {
         var oldMemories = originMemories[memoryItem] || {};
-        var newMemories = infoIsParsed?memoriesDef:{
-            BI: CfgStringParser(memoriesDef.BI || ""), BQ: CfgStringParser(memoriesDef.BQ || ""),
-            WI: CfgStringParser(memoriesDef.WI || ""), WQ: CfgStringParser(memoriesDef.WQ || "")
-        };
-        var bi_remove = [];
-        _.each(newMemories.BI, function (regNum) {
-            if (oldMemories.BI_INFO[regNum] > 1) {
-                oldMemories.BI_INFO[regNum]--;
-            } else {
-                delete oldMemories.BI_INFO[regNum];
-                bi_remove.push(regNum);
-            }
-        });
-        oldMemories.BI = _.sortBy(_.difference(oldMemories.BI, bi_remove));
+        var newMemories = infoIsParsed?memoriesDef:
+            {
+                BI:CfgStringParser(memoriesDef.BI || ""),
+                BQ:CfgStringParser(memoriesDef.BQ || ""),
+                BP:CfgStringParser(memoriesDef.BP || ""),
+                WI:CfgStringParser(memoriesDef.WI || ""),
+                WQ:CfgStringParser(memoriesDef.WQ || "")
+            };
 
-        var bq_remove = [];
-        _.each(newMemories.BQ, function (regNum) {
-            if (oldMemories.BQ_INFO[regNum] > 1) {
-                oldMemories.BQ_INFO[regNum]--;
-            } else {
-                delete oldMemories.BQ_INFO[regNum];
-                bq_remove.push(regNum);
-            }
-        });
-        oldMemories.BQ = _.sortBy(_.difference(oldMemories.BQ, bq_remove));
+        _.each(memoryKeys,(key)=>{
+            let remove = [];
+            let infoKey = key+'_INFO';
+            _.each(newMemories[key], (regNum)=> {
+                if (oldMemories[infoKey][regNum] > 1) {
+                    oldMemories[infoKey][regNum]--;
+                } else {
+                    delete oldMemories[infoKey][regNum];
+                    remove.push(regNum);
+                }
+            });
+            oldMemories[key] = _.sortBy(_.difference(oldMemories[key], remove));
 
-        var wi_remove = [];
-        _.each(newMemories.WI, function (regNum) {
-            if (oldMemories.WI_INFO[regNum] > 1) {
-                oldMemories.WI_INFO[regNum]--;
-            } else {
-                delete oldMemories.WI_INFO[regNum];
-                wi_remove.push(regNum);
-            }
         });
-        oldMemories.WI = _.sortBy(_.difference(oldMemories.WI, wi_remove));
 
-        var wq_remove = [];
-        _.each(newMemories.WQ, function (regNum) {
-            if (oldMemories.WQ_INFO[regNum] > 1) {
-                oldMemories.WQ_INFO[regNum]--;
-            } else {
-                delete oldMemories.WQ_INFO[regNum];
-                wq_remove.push(regNum);
-            }
-        });
-        oldMemories.WQ = _.sortBy(_.difference(oldMemories.WQ, wq_remove));
+            // var bi_remove = [];
+            // _.each(newMemories.BI, function (regNum) {
+            //     if (oldMemories.BI_INFO[regNum] > 1) {
+            //         oldMemories.BI_INFO[regNum]--;
+            //     } else {
+            //         delete oldMemories.BI_INFO[regNum];
+            //         bi_remove.push(regNum);
+            //     }
+            // });
+            // oldMemories.BI = _.sortBy(_.difference(oldMemories.BI, bi_remove));
+            //
+            // var bq_remove = [];
+            // _.each(newMemories.BQ, function (regNum) {
+            //     if (oldMemories.BQ_INFO[regNum] > 1) {
+            //         oldMemories.BQ_INFO[regNum]--;
+            //     } else {
+            //         delete oldMemories.BQ_INFO[regNum];
+            //         bq_remove.push(regNum);
+            //     }
+            // });
+            // oldMemories.BQ = _.sortBy(_.difference(oldMemories.BQ, bq_remove));
+            //
+            // var wi_remove = [];
+            // _.each(newMemories.WI, function (regNum) {
+            //     if (oldMemories.WI_INFO[regNum] > 1) {
+            //         oldMemories.WI_INFO[regNum]--;
+            //     } else {
+            //         delete oldMemories.WI_INFO[regNum];
+            //         wi_remove.push(regNum);
+            //     }
+            // });
+            // oldMemories.WI = _.sortBy(_.difference(oldMemories.WI, wi_remove));
+            //
+            // var wq_remove = [];
+            // _.each(newMemories.WQ, function (regNum) {
+            //     if (oldMemories.WQ_INFO[regNum] > 1) {
+            //         oldMemories.WQ_INFO[regNum]--;
+            //     } else {
+            //         delete oldMemories.WQ_INFO[regNum];
+            //         wq_remove.push(regNum);
+            //     }
+            // });
+            // oldMemories.WQ = _.sortBy(_.difference(oldMemories.WQ, wq_remove));
 
 
     });

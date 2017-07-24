@@ -312,6 +312,7 @@ WorkerBase.prototype.rebuildMemMap = function () {
             this.autoReadMaps[devId] = this.autoReadMaps[devId] || {};
             this.autoReadMaps[devId].bi_map = PDUtils.CreateMapArray(memoryDef.BI, this.maxSegLength, this.minGapLength);
             this.autoReadMaps[devId].bq_map = PDUtils.CreateMapArray(memoryDef.BQ, this.maxSegLength, this.minGapLength);
+            this.autoReadMaps[devId].bp_map = PDUtils.CreateMapArray(memoryDef.BP, this.maxSegLength, this.minGapLength);
             this.autoReadMaps[devId].wi_map = PDUtils.CreateMapArray(memoryDef.WI, this.maxSegLength, this.minGapLength);
             this.autoReadMaps[devId].wq_map = PDUtils.CreateMapArray(memoryDef.WQ, this.maxSegLength, this.minGapLength);
         }.bind(this))
@@ -403,6 +404,11 @@ WorkerBase.prototype.ReadWQ = function (mapItem, devId) {
 };
 WorkerBase.prototype.WriteBQ = function (mapItem, value, devId) {
     var error = 'WriteBQ must be defined!';
+    console.error(error);
+    throw new error(error);
+};
+WorkerBase.prototype.WriteBP = function (mapItem, value, devId) {
+    var error = 'WriteBP must be defined!';
     console.error(error);
     throw new error(error);
 };
@@ -887,7 +893,11 @@ WorkerBase.prototype.writeRegValueToDevice = function (onePiece) {
                         return async.eachSeries(writeArrays, function (onePack) {
                             if (memTag == 'BQ') { //写多个线圈
                                 return that.WriteBQ(onePack, segToWrite[devId][memTag], devId);
-                            } else if (memTag == 'WQ') {  //写多个寄存器
+                            }
+                            else if (memTag == 'BP') { //写多个线圈
+                                return that.WriteBP(onePack, segToWrite[devId][memTag], devId);
+                            }
+                            else if (memTag == 'WQ') {  //写多个寄存器
                                 return that.DoWriteWQ(onePack, segToWrite[devId][memTag], devId);
                             }
                         })
