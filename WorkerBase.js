@@ -621,7 +621,7 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
             var regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
             var boolValue = (newData[i] ? true : false);
 
-            if (that.readRegValues[regName] != boolValue) {
+            if (that.readRegValues[regName] !== boolValue) {
                 that.readRegValues[regName] = boolValue;
                 modified_regs.push(regName);
             }
@@ -634,14 +634,14 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
             var regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
 
             var value = newData[i];
-            if (that.readRegValues[regName] != value) {
+            if (that.readRegValues[regName] !== value) {
                 that.readRegValues[regName] = value;
                 modified_regs.push(regName);
             }
         }
     }
 
-    if (this.runningState == this.RUNNING_STATE.CONNECTED) {
+    if (this.runningState === this.RUNNING_STATE.CONNECTED) {
 
 
         this.initDeviceId(devId);
