@@ -87,4 +87,54 @@ this.setupAsyncWQTimer(2000); //打开重发
 如果本身不需要重发的，或者发送有回应本身就不一致的，如发送访客机查询一个访客记录等这种数据，通过setupAsyncWQTimer(0)来关闭重发，或者不调用setupAsyncWQTimer，因为默认是不重发的。
 ## 自动读取的数据模式
 在autoPoll模式下，为了避免大量的无效数据召测，驱动可以设置自动读取功能，实现针对某些数据的自动定时读取，同时可以对不同的数据点进行不同间隔的读取
+在autopoll类型的设备驱动中，如果没有设置，系统自动会不断查询memories中的所有的bi/bq/wi/wq的数据，但是在实际应用中，有可能需要按照某个间隔或是时间点进行一些读取的动作，想要达到这些效果，按如下的方式进行：
 
+在调用this.SetAutoReadConfig 设置内容，其参数是一个对象，格式如下：
+
+{
+
+   "devId":{
+
+
+      "1":{
+
+          "interval":xxx ,读取的间隔时间
+
+          "readTime":{"month":xx,"day":xx,"hour":xx,"minute":xx,"second":xx}
+
+      },
+
+  "2":{
+
+          "interval":xxx ,读取的间隔时间
+
+          "readTime":{"month":xx,"day":xx,"hour":xx,"minute":xx,"second":xx}
+
+      }
+
+
+
+ }
+
+}
+
+
+interval是表示间隔多久读一次
+
+readTime表示在哪个时间点读一次，两者只需要一个，interval优先
+
+readTime:如果是每天读，就不需要month，如果每小时读，就不需要month/day字段，以此类推.
+
+举例：
+
+{"day":1,"hour":0,"minute":1,"second":0} 表示每月1号的0：1：0秒读取一次
+
+而
+
+{"hour":0,"minute":1,"second":0} 表示每天00:01:00秒读取一次
+
+更低级别的如果没有定义，默认为0{"hour":0,"minute":1} 仍旧示每天00:01:00秒读取一次
+
+如果对应的属性值不是一个数字，而是一个字符串，那么系统会把这个字符串解析成一个函数，如果函数（以对应的属性值为参数）运行返回true，该点上就会执行数据读取动作
+
+如："minute":"function(data) { return (data % 15) === 0}，那么就会每隔15分钟读取一次
