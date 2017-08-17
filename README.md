@@ -90,11 +90,9 @@ this.setupAsyncWQTimer(2000); //打开重发
 在autopoll类型的设备驱动中，如果没有设置，系统自动会不断查询memories中的所有的bi/bq/wi/wq的数据，但是在实际应用中，有可能需要按照某个间隔或是时间点进行一些读取的动作，想要达到这些效果，按如下的方式进行：
 
 在调用this.SetAutoReadConfig 设置内容，其参数是一个对象，格式如下：
-
-{
+  {
 
    "devId":{
-
 
       "1":{
 
@@ -103,20 +101,14 @@ this.setupAsyncWQTimer(2000); //打开重发
           "readTime":{"month":xx,"day":xx,"hour":xx,"minute":xx,"second":xx}
 
       },
-
   "2":{
 
           "interval":xxx ,读取的间隔时间
 
           "readTime":{"month":xx,"day":xx,"hour":xx,"minute":xx,"second":xx}
-
-      }
-
-
-
- }
-
-}
+        }
+   }
+  }
 
 
 interval是表示间隔多久读一次
