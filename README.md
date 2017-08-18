@@ -260,8 +260,16 @@ inOrEx是用于向云端汇报设备有变化了。
             .type "in"/"ex" 表示设备是添加了还是删除了
             .devices 需要对应的设备，其格式如下：
             {
-                deviceId:uniqueId
+                deviceId:{
+                    uniqueId:xxxx,
+                    nameInGroup:xxx,
+                    groupId:xxxx
+                    config:xxxx
+                    }
             }
             deviceId是对应的设备id，这个是在一个家庭中唯一的，
             uniqueId是在该驱动下的唯一类型id
+            nameInGroup 设备名称，可以没有，如果没有，云端会自动根据设备类型赋一个
+            groupId：所在的group，默认总是在.里
+            config，需要提供给云端的配置
             
