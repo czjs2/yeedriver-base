@@ -203,3 +203,65 @@ function(reg){函数直接使用this即可,原函数里已经bind(this)了
     const memories= {devId:devId,memories:{wq_map:[{start:reg,end:reg,len:1}]}};
 
 的结构，驱动响应此消息，然后调用ReadWQ/WI系列命令来读取相应的WQ的值，并且会自动与上一次的相比较是否变化了，如果变化，就会产生一系列的动作通知上层
+
+##添加删除设备
+添加或删除设备通过inOrEx来实现
+
+    /*
+     * 启动加入设备状态
+     *
+     */
+    WorkerBase.prototype.setInOrEx = function (option) {
+    
+    };
+    
+    WorkerBase.prototype.inOrEx = function (option) {
+        SendMessage(process, {cmd: 'inOrEx', option});
+    };
+    
+setInOrEx是收到云端发送的添加命令后的响应函数
+inOrEx是用于向云端汇报设备有变化了。
+
+继承类重写setInOrEx函数，从而实现对用户端设备刷新等命令的响应
+在setInOrEx函数中，重新检查一遍设备，然后与options中的sids来对比，确定设备的变化以及设备的类型，通过调用inOrEx来向云端通知。
+下面是一个示例
+
+          //向网关查询一遍
+            var addDevices = {};
+            var delDevices = {};
+            this.gatewayMaster.EnumDevices();
+            setTimeout(function () {
+                //3秒后对比数据
+                var self = this;
+                var rawOptIds = (self.rawOptions && self.rawOptions.sids) || {};
+                let newDevices = this.gatewayMaster.getDevicesList();
+                _.each(newDevices, function (devInfo, devId) {
+                    if (rawOptIds[devId] === undefined) {
+                        addDevices[devId] = devInfo;
+                    }
+                });
+                _.each(rawOptIds, function (devInfo, devId) {
+                    if (newDevices[devId] === undefined) {
+                        delDevices[devId] = devInfo;
+                    }
+                });
+                if (!_.isEmpty(addDevices))
+                    this.inOrEx({type: "in", devices: addDevices});//uniqueKey:nodeid,uniqueId:nodeinfo.manufacturerid+nodeinfo.productid})
+                //console.log('new Devices:',addDevices);
+                if (!_.isEmpty(delDevices)) {
+                    this.inOrEx({type: "ex", devices: delDevices});
+                }
+                //console.log('removed Devices:',delDevices);
+            }.bind(this), 3000);
+            
+通过this.inOrEx向主机汇报设备的变化
+            
+            inOrEx(options)中的参数格式：
+            .type "in"/"ex" 表示设备是添加了还是删除了
+            .devices 需要对应的设备，其格式如下：
+            {
+                deviceId:uniqueId
+            }
+            deviceId是对应的设备id，这个是在一个家庭中唯一的，
+            uniqueId是在该驱动下的唯一类型id
+            

@@ -891,13 +891,13 @@ WorkerBase.prototype.writeRegValueToDevice = function (onePiece) {
                         var writeArrays = PDUtils.CreateWritePackedArray(Object.keys(memValues));
 
                         return async.eachSeries(writeArrays, function (onePack) {
-                            if (memTag == 'BQ') { //写多个线圈
+                            if (memTag === 'BQ') { //写多个线圈
                                 return that.WriteBQ(onePack, segToWrite[devId][memTag], devId);
                             }
-                            else if (memTag == 'BP') { //写多个线圈
+                            else if (memTag === 'BP') { //写多个线圈
                                 return that.WriteBP(onePack, segToWrite[devId][memTag], devId);
                             }
-                            else if (memTag == 'WQ') {  //写多个寄存器
+                            else if (memTag === 'WQ') {  //写多个寄存器
                                 return that.DoWriteWQ(onePack, segToWrite[devId][memTag], devId);
                             }
                         })
