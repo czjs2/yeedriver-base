@@ -1,24 +1,50 @@
 {
-  "name": "yeedriver-base",
-  "version": "1.0.1",
-  "description": "yeedriver",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/czjs2/yeedriver-base.git"
-  },
-  "keywords": [
-    "yeedriver"
+  "_args": [
+    [
+      "yeedriver-base",
+      "/home/zhuqizhong"
+    ]
   ],
-  "author": "fx",
-  "license": "GPL-3.0",
+  "_cnpm_publish_time": 1500873278141,
+  "_from": "yeedriver-base@latest",
+  "_hasShrinkwrap": false,
+  "_id": "yeedriver-base@1.0.2",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/yeedriver-base",
+  "_nodeVersion": "6.11.1",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/yeedriver-base-1.0.1.tgz_1500873277991_0.9376377495937049"
+  },
+  "_npmUser": {
+    "email": "czjs2@qq.com",
+    "name": "czjs2"
+  },
+  "_npmVersion": "5.2.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "yeedriver-base",
+    "raw": "yeedriver-base",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "http://registry.npm.taobao.org/yeedriver-base/download/yeedriver-base-1.0.1.tgz",
+  "_shasum": "c753d4ee2f470b95938565a0bfc7246fa69b6bf6",
+  "_shrinkwrap": null,
+  "_spec": "yeedriver-base",
+  "_where": "/home/zhuqizhong",
+  "author": {
+    "name": "fx"
+  },
   "bugs": {
     "url": "https://github.com/czjs2/yeedriver-base/issues"
   },
-  "homepage": "https://github.com/czjs2/yeedriver-base#readme",
   "dependencies": {
     "async-q": "^0.3.1",
     "bluebird": "^3.5.0",
@@ -26,5 +52,39 @@
     "lodash": "^4.17.4",
     "q": "^1.5.0",
     "sendmessage": "^1.1.0"
-  }
+  },
+  "description": "yeedriver",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "noattachment": false,
+    "shasum": "c753d4ee2f470b95938565a0bfc7246fa69b6bf6",
+    "size": 23414,
+    "tarball": "http://registry.npm.taobao.org/yeedriver-base/download/yeedriver-base-1.0.1.tgz"
+  },
+  "gitHead": "1f0c8588f69907fffb75900b72d43f9479a65045",
+  "homepage": "https://github.com/czjs2/yeedriver-base#readme",
+  "keywords": [
+    "yeedriver"
+  ],
+  "license": "GPL-3.0",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "email": "czjs2@qq.com",
+      "name": "czjs2"
+    }
+  ],
+  "name": "yeedriver-base",
+  "optionalDependencies": {},
+  "publish_time": 1500873278141,
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/czjs2/yeedriver-base.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.1"
 }

@@ -204,6 +204,9 @@ function(reg){函数直接使用this即可,原函数里已经bind(this)了
 
 的结构，驱动响应此消息，然后调用ReadWQ/WI系列命令来读取相应的WQ的值，并且会自动与上一次的相比较是否变化了，如果变化，就会产生一系列的动作通知上层
 
+* 这种处理方式，对客户代码有麻烦，因此WorkBase提供了两个辅助函数
+WorkBase.setOneMemChanged(devId,memTag,memId) 客户端代码通过此函数通知驱动某个设备的寄存器信息已经更新了
+
 ##添加删除设备
 添加或删除设备通过inOrEx来实现
 

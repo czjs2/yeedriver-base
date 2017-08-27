@@ -480,6 +480,31 @@ WorkerBase.prototype.setRunningState = function (state) {
 
 }
 /**
+ * 通知驱动，某个服务更改了
+ * @param devId
+ * @param memTag
+ * @param memId
+ */
+WorkerBase.prototype.setOneMemChanged = function (devId,memTag,memId) {
+    let mem_info = {}
+    mem_info[memTag]={
+        start:memId,
+        end:memId
+    }
+    this.emit('RegRead',{devId:devId,memories:mem_info});
+
+}
+
+WorkerBase.prototype.setMemoriesChanged = function (devId,memTag,memIds) {
+    let mem_info = {}
+    mem_info[memTag]={
+        start:memId,
+        end:memId
+    }
+    this.emit('RegRead',{devId:devId,memories:mem_info});
+
+}
+/**
  * 启动事件型的信息读取功能
  */
 WorkerBase.prototype.setupEvent = function () {
@@ -621,7 +646,7 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
             var regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
             var boolValue = (newData[i] ? true : false);
 
-            if (that.readRegValues[regName] !== boolValue) {
+            if (that.readRegValues[regName] != boolValue) {
                 that.readRegValues[regName] = boolValue;
                 modified_regs.push(regName);
             }
@@ -634,14 +659,14 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
             var regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
 
             var value = newData[i];
-            if (that.readRegValues[regName] !== value) {
+            if (that.readRegValues[regName] != value) {
                 that.readRegValues[regName] = value;
                 modified_regs.push(regName);
             }
         }
     }
 
-    if (this.runningState === this.RUNNING_STATE.CONNECTED) {
+    if (this.runningState == this.RUNNING_STATE.CONNECTED) {
 
 
         this.initDeviceId(devId);
@@ -891,13 +916,13 @@ WorkerBase.prototype.writeRegValueToDevice = function (onePiece) {
                         var writeArrays = PDUtils.CreateWritePackedArray(Object.keys(memValues));
 
                         return async.eachSeries(writeArrays, function (onePack) {
-                            if (memTag === 'BQ') { //写多个线圈
+                            if (memTag == 'BQ') { //写多个线圈
                                 return that.WriteBQ(onePack, segToWrite[devId][memTag], devId);
                             }
-                            else if (memTag === 'BP') { //写多个线圈
+                            else if (memTag == 'BP') { //写多个线圈
                                 return that.WriteBP(onePack, segToWrite[devId][memTag], devId);
                             }
-                            else if (memTag === 'WQ') {  //写多个寄存器
+                            else if (memTag == 'WQ') {  //写多个寄存器
                                 return that.DoWriteWQ(onePack, segToWrite[devId][memTag], devId);
                             }
                         })
