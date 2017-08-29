@@ -8,7 +8,7 @@
   "_cnpm_publish_time": 1500873278141,
   "_from": "yeedriver-base@latest",
   "_hasShrinkwrap": false,
-  "_id": "yeedriver-base@1.0.2",
+  "_id": "yeedriver-base@1.0.3",
   "_inCache": true,
   "_installable": true,
   "_location": "/yeedriver-base",
@@ -86,5 +86,5 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.0.1"
+  "version": "1.0.3"
 }

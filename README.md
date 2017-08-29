@@ -146,7 +146,7 @@ ReadWQ/WI的mapItem是一个复杂的结构，原来的目的在于提高效率�
     /**
      * 针对每一个mapItem的项，调用一次regReader，具有一个参数( reg)，代表所要读取的寄存器， 返回读取的值即可
      * @param mapItem  数据项
-     * @param regReader ( reg)
+     * @param regReader ( reg )
      * @returns {Promise.<TResult>}
      * @constructor
      */

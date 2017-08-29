@@ -356,6 +356,7 @@ WorkerBase.prototype.procWritePending = function () {
 };
 
 WorkerBase.prototype.SendExecResponse = function (tag, uuid, result) {
+    this.emit(tag+'Changed',{cmd: tag, uuid: uuid, result: result})
     SendMessage(process, {cmd: tag, uuid: uuid, result: result});
 };
 
@@ -487,10 +488,24 @@ WorkerBase.prototype.setRunningState = function (state) {
  */
 WorkerBase.prototype.setOneMemChanged = function (devId,memTag,memId) {
     let mem_info = {}
-    mem_info[memTag]={
+    switch(memTag){
+        case 'WQ':
+            memTag = 'wq_map';
+            break;
+        case 'WI':
+            memTag = 'wi_map';
+            break;
+        case 'BI':
+            memTag = 'bi_map';
+            break;
+        case 'BQ':
+            memTag = 'bq_map';
+            break;
+    }
+    mem_info[memTag]=[{
         start:memId,
         end:memId
-    }
+    }]
     this.emit('RegRead',{devId:devId,memories:mem_info});
 
 }
@@ -517,7 +532,7 @@ WorkerBase.prototype.setupEvent = function () {
     }.bind(this));
     this.on('RegRead', function (regInfos) {
         if (regInfos) {
-            var infectMemories = regInfos.memories;
+            let infectMemories = regInfos.memories;
             _.each(infectMemories, function (item, memTag) {
                 if (item.hasOwnProperty('start') && item.hasOwnProperty('end')) {
                     item.len = item.end + 1 - item.start;
@@ -642,7 +657,7 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
      }*/
 
     function checkAndSetBitRegs(tag, devId, bi_mapItem, newData) {
-        for (var i = 0; i < bi_mapItem.len; i++) {
+        for (var i = 0; i < (bi_mapItem.len || (bi_mapItem.end+1-bi_mapItem.start)); i++) {
             var regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
             var boolValue = (newData[i] ? true : false);
 
@@ -655,7 +670,7 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
 
     function checkAndSetWordRegs(tag, devId, bi_mapItem, newData) {
         newData = newData || {};
-        for (var i = 0; i < bi_mapItem.len; i++) {
+        for (var i = 0; i < (bi_mapItem.len || (bi_mapItem.end+1-bi_mapItem.start)); i++) {
             var regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
 
             var value = newData[i];
@@ -706,9 +721,9 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
                 return Q().then(function () {
                     return that.ReadWQ(bi_mapItem, devId);
                 }).then(function (data) {
-                    //console.log('wq:',JSON.stringify(data));
+                    console.log('wq:',JSON.stringify(data));
                     checkAndSetWordRegs('WQ', devId, bi_mapItem, data);
-//                    console.log('modified:', modified_regs);
+                    console.log('modified:', modified_regs);
                 }).catch(function (e) {
                     console.log(new Date().getTime() + ' error:' + e);
                 });
