@@ -1,19 +1,19 @@
 /**
  * Created by zhuqizhong on 16-11-10.
  */
-var child_process = require('child_process');
-var SendMessage = require('sendmessage');
-var event = require('events');
-var util = require('util');
-var _ = require('lodash');
-var PDUtils = require('./PDUtils');
+let child_process = require('child_process');
+let SendMessage = require('sendmessage');
+let event = require('events');
+let util = require('util');
+let _ = require('lodash');
+let PDUtils = require('./PDUtils');
 const InfinitLoop = require('./InfinitLoop');
 const async = require('async-q');
 const Q = require('q');
 const MAX_WRITE_CNT = 50;
 const consts = require('./consts');
-var Lock = require('lock');
-var lock = Lock();
+let Lock = require('lock');
+let lock = Lock();
 
 /**
  * 几个数据结构
@@ -122,7 +122,7 @@ util.inherits(WorkerBase, event.EventEmitter);
  * @param memories
  */
 WorkerBase.prototype.initDriver = function (options, memories) {
-    var error = ('initDriver must be defined!');
+    let error = ('initDriver must be defined!');
 
     console.error(error);
     throw new Error(error);
@@ -159,9 +159,9 @@ WorkerBase.prototype.EpsInit = function (deviceId, regInfos, devSpecOpts) {
         }.bind(this));
     }.bind(this));
     //regToEps
-    var addMemories = {};
+    let addMemories = {};
     _.each(_.keys(this.regToEps), function (memoryId) {
-        var regDef = PDUtils.splitRegDef(memoryId);
+        let regDef = PDUtils.splitRegDef(memoryId);
         if (regDef) {
             if (!addMemories[regDef.devId]) {
                 addMemories[regDef.devId] = {};
@@ -205,7 +205,7 @@ WorkerBase.prototype.OnRegModified = function (modified_regs) {
      * regToEps[regName] = [{deviceId:devId,epId:epId}] */
 
     // console.log('modified regs:',modified_regs);
-    var infectedEps = {};
+    let infectedEps = {};
     //生成受影响的device/endpoint列表
     _.each(modified_regs, function (oneReg) {
         //dp里包括两项：driverInst和dpId,需要通过这个反向寻找对应的寄存器是哪些
@@ -233,13 +233,13 @@ WorkerBase.prototype.OnRegModified = function (modified_regs) {
 };
 WorkerBase.prototype.SetAutoReadConfig = function (newConfig) {
 
-    var match = ["year", "month", "day", "hour", "minute", "second"];
-    var extractor = ["getYear", "getMonth", "getDate", "getHours", "getMinutes", "getSeconds"]
+    let match = ["year", "month", "day", "hour", "minute", "second"];
+    let extractor = ["getYear", "getMonth", "getDate", "getHours", "getMinutes", "getSeconds"]
 
     function shouldRead(matcher) {
 
-        var curTime = new Date();
-        var matched = true;
+        let curTime = new Date();
+        let matched = true;
 
         for (let i = 0; i < 6; i++) {
             if (matcher[i] !== undefined) {
@@ -262,7 +262,7 @@ WorkerBase.prototype.SetAutoReadConfig = function (newConfig) {
                 newPresetAutoreadRegs[devId][ep] = {interval: wqDef.interval, remain: parseInt(Math.random() * 20) + 1}
             } else if (wqDef.readTime) {
                 let firstDefFound = false;
-                var matcher = [];
+                let matcher = [];
                 for (let i = 0; i < 6; i++) {
                     if (wqDef.readTime[match[i]] === undefined) {
                         if (firstDefFound) {
@@ -328,7 +328,7 @@ WorkerBase.prototype.rebuildMemMap = function () {
  * @returns {*}
  */
 WorkerBase.prototype.procWritePending = function () {
-    var regsToWrite = this.writeRegValues || [];
+    let regsToWrite = this.writeRegValues || [];
     this.writeRegValues = [];
 
     return async.eachSeries(regsToWrite, function (onePiece) {
@@ -383,33 +383,33 @@ WorkerBase.prototype.addDevice = function (type, uniqueId, uniqueKey) {
 };
 
 WorkerBase.prototype.ReadBI = function (mapItem, devId) {
-    var error = 'ReadBI must be defined!';
+    let error = 'ReadBI must be defined!';
     console.error(error);
     throw new error(error);
 };
 WorkerBase.prototype.ReadBQ = function (mapItem, devId) {
-    var error = 'ReadBQ must be defined!';
+    let error = 'ReadBQ must be defined!';
     console.error(error);
     throw new error(error);
 };
 
 WorkerBase.prototype.ReadWI = function (mapItem, devId) {
-    var error = 'ReadWI must be defined!';
+    let error = 'ReadWI must be defined!';
     console.error(error);
     throw new error(error);
 };
 WorkerBase.prototype.ReadWQ = function (mapItem, devId) {
-    var error = 'ReadWQ must be defined!';
+    let error = 'ReadWQ must be defined!';
     console.error(error);
     throw new error(error);
 };
 WorkerBase.prototype.WriteBQ = function (mapItem, value, devId) {
-    var error = 'WriteBQ must be defined!';
+    let error = 'WriteBQ must be defined!';
     console.error(error);
     throw new error(error);
 };
 WorkerBase.prototype.WriteBP = function (mapItem, value, devId) {
-    var error = 'WriteBP must be defined!';
+    let error = 'WriteBP must be defined!';
     console.error(error);
     throw new error(error);
 };
@@ -467,7 +467,7 @@ WorkerBase.prototype.DoWriteWQ = function (mapItem, value, devId) {
     return defer.promise;
 };
 WorkerBase.prototype.WriteWQ = function (mapItem, value, devId) {
-    var error = 'WriteWQ must be defined!';
+    let error = 'WriteWQ must be defined!';
     console.error(error);
     throw new error(error);
 };
@@ -546,8 +546,8 @@ WorkerBase.prototype.setupEvent = function () {
  * 处理读取队列
  */
 WorkerBase.prototype.procCallPending = function () {
-    var that = this;
-    var regsToRead = this.pendReadRegs || [];
+    let that = this;
+    let regsToRead = this.pendReadRegs || [];
     this.pendReadRegs = [];
 
     return async.eachSeries(regsToRead, function (onePiece) {
@@ -555,9 +555,9 @@ WorkerBase.prototype.procCallPending = function () {
          target: msg.regs,
          time: new Date(),
          timeout: msg.timeout || 2000*/
-        var readInfo = {};
+        let readInfo = {};
         _.each(onePiece.target, function (memoryId) {
-            var regDef = PDUtils.splitRegDef(memoryId);
+            let regDef = PDUtils.splitRegDef(memoryId);
             if (regDef) {
                 if (!readInfo[regDef.devId]) {
                     readInfo[regDef.devId] = {};
@@ -570,13 +570,13 @@ WorkerBase.prototype.procCallPending = function () {
         });
 
         return async.eachSeries(_.keys(readInfo), function (devId) {
-            var memory_map = {};
+            let memory_map = {};
             _.each(_.keys(readInfo[devId]), function (memTag) {
                 memory_map[memTag.toLowerCase() + "_map"] = PDUtils.CreateMapArray(_.sortBy(readInfo[devId][memTag]), that.maxSegLength, that.minGapLength);
             });
             return that.procOneReadDev(devId, memory_map);
         }).then(function () {
-            var result = {};
+            let result = {};
             _.each(onePiece.target, function (regId) {
                 result[regId] = that.readRegValues[regId];
             })
@@ -605,7 +605,7 @@ WorkerBase.prototype.procCallPending = function () {
  * @returns {*}
  */
 WorkerBase.prototype.procReadRegs = function (readRegs) {
-    /*var reg = {
+    /*let reg = {
      "1": {
      "bi_map": [],
      "bq_map": [],
@@ -630,7 +630,7 @@ WorkerBase.prototype.procReadRegs = function (readRegs) {
 
 
     return async.eachSeries(Object.keys(readRegs||{}), function (devId) {
-        var memories = this.autoReadMaps[devId];
+        let memories = this.autoReadMaps[devId];
         return this.procOneReadDev(devId, memories);
     }.bind(this))
 
@@ -643,8 +643,8 @@ WorkerBase.prototype.procReadRegs = function (readRegs) {
  * @returns {Promise.<TResult>}
  */
 WorkerBase.prototype.procOneReadDev = function (devId, memories) {
-    var modified_regs = [];
-    var that = this;
+    let modified_regs = [];
+    let that = this;
     /* memories: {
      "bi_map": [],
      "bq_map": [],
@@ -657,9 +657,9 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
      }*/
 
     function checkAndSetBitRegs(tag, devId, bi_mapItem, newData) {
-        for (var i = 0; i < (bi_mapItem.len || (bi_mapItem.end+1-bi_mapItem.start)); i++) {
-            var regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
-            var boolValue = (newData[i] ? true : false);
+        for (let i = 0; i < (bi_mapItem.len || (bi_mapItem.end+1-bi_mapItem.start)); i++) {
+            let regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
+            let boolValue = (newData[i] ? true : false);
 
             if (that.readRegValues[regName] != boolValue) {
                 that.readRegValues[regName] = boolValue;
@@ -670,10 +670,10 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
 
     function checkAndSetWordRegs(tag, devId, bi_mapItem, newData) {
         newData = newData || {};
-        for (var i = 0; i < (bi_mapItem.len || (bi_mapItem.end+1-bi_mapItem.start)); i++) {
-            var regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
+        for (let i = 0; i < (bi_mapItem.len || (bi_mapItem.end+1-bi_mapItem.start)); i++) {
+            let regName = devId + ":" + tag + "." + (bi_mapItem.start + i);
 
-            var value = newData[i];
+            let value = newData[i];
             if (that.readRegValues[regName] != value) {
                 that.readRegValues[regName] = value;
                 modified_regs.push(regName);
@@ -745,7 +745,7 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
  * @constructor
  */
 WorkerBase.prototype.WorkRoutine = function () {
-    var that = this;
+    let that = this;
 
 
     return this.procWritePending().then(function () {
@@ -766,7 +766,7 @@ WorkerBase.release = function () {
     }
 };
 WorkerBase.prototype.setupPredefineReadInterval = function () {
-    var self = this;
+    let self = this;
     if (this.presetReadHandle) {
         clearInterval(this.presetReadHandle);
         this.presetReadHandle = null;
@@ -917,27 +917,27 @@ WorkerBase.prototype.updateWriteState = function (deviceId, wq, newState, param)
  };*/
 WorkerBase.prototype.writeRegValueToDevice = function (onePiece) {
 
-    var that = this;
+    let that = this;
     if (this.runningState === this.RUNNING_STATE.CONNECTED) {
-        var time_elasp = new Date().getTime() - onePiece.time;
+        let time_elasp = new Date().getTime() - onePiece.time;
         if (time_elasp <= onePiece.timeout) {
-            var segToWrite = onePiece.target;
+            let segToWrite = onePiece.target;
             if (segToWrite) {
                 //segToWrite的形式： segToWrite[regDef.devId][regDef.memTag][regDef.memIndex]= regValue;
                 return async.eachSeries(_.keys(segToWrite), function (devId) {
-                    var memories = segToWrite[devId];
+                    let memories = segToWrite[devId];
                     return async.eachSeries(_.keys(memories), function (memTag) {
-                        var memValues = memories[memTag];
-                        var writeArrays = PDUtils.CreateWritePackedArray(Object.keys(memValues));
+                        let memValues = memories[memTag];
+                        let writeArrays = PDUtils.CreateWritePackedArray(Object.keys(memValues));
 
                         return async.eachSeries(writeArrays, function (onePack) {
-                            if (memTag == 'BQ') { //写多个线圈
+                            if (memTag === 'BQ') { //写多个线圈
                                 return that.WriteBQ(onePack, segToWrite[devId][memTag], devId);
                             }
-                            else if (memTag == 'BP') { //写多个线圈
+                            else if (memTag === 'BP') { //写多个线圈
                                 return that.WriteBP(onePack, segToWrite[devId][memTag], devId);
                             }
-                            else if (memTag == 'WQ') {  //写多个寄存器
+                            else if (memTag === 'WQ') {  //写多个寄存器
                                 return that.DoWriteWQ(onePack, segToWrite[devId][memTag], devId);
                             }
                         })
