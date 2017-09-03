@@ -721,9 +721,9 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
                 return Q().then(function () {
                     return that.ReadWQ(bi_mapItem, devId);
                 }).then(function (data) {
-                    console.log('wq:',JSON.stringify(data));
+                   // console.log('wq:',JSON.stringify(data));
                     checkAndSetWordRegs('WQ', devId, bi_mapItem, data);
-                    console.log('modified:', modified_regs);
+                  //  console.log('modified:', modified_regs);
                 }).catch(function (e) {
                     console.log(new Date().getTime() + ' error:' + e);
                 });
