@@ -69,7 +69,7 @@ function WorkerBase(maxSegLength, minGapLength) {
                             uuid: msg.uuid,
                             target: this.CreateRegsObj(msg.regs),
                             time: new Date(),
-                            timeout: msg.timeout || 2000
+                            timeout: msg.timeout || 2000000
                         });
                         this.emit('UpdateRegs', {});
                     } else {
