@@ -21,7 +21,7 @@ InfinitLoop.prototype.addRoutine = function(Routine,timeout){
             }).delay(timeout || 10).catch(function(e){
                 console.error('error in read:',e ," and stack:",e.stack);
             }).finally(function(){
-                process.nextTick(function(){self.emit(eventName);});
+                setImmediate(function(){self.emit(eventName);});
             })
         }
 

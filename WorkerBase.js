@@ -752,7 +752,9 @@ WorkerBase.prototype.WorkRoutine = function () {
         return this.procCallPending();
     }.bind(this)).then(function () {
         return this.procReadRegs(this.autoReadMaps || {});
-    }.bind(this));
+    }.bind(this)).catch((e)=>{
+        console.error('error',e.message||e);
+    });
 };
 
 WorkerBase.release = function () {
@@ -923,6 +925,7 @@ WorkerBase.prototype.writeRegValueToDevice = function (onePiece) {
         if (time_elasp <= onePiece.timeout) {
             let segToWrite = onePiece.target;
             if (segToWrite) {
+               /// console.log('...',JSON.stringify(segToWrite));
                 //segToWrite的形式： segToWrite[regDef.devId][regDef.memTag][regDef.memIndex]= regValue;
                 return async.eachSeries(_.keys(segToWrite), function (devId) {
                     let memories = segToWrite[devId];
