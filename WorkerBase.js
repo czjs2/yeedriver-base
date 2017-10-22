@@ -745,15 +745,13 @@ WorkerBase.prototype.procOneReadDev = function (devId, memories) {
  * @constructor
  */
 WorkerBase.prototype.WorkRoutine = function () {
-    let that = this;
-
 
     return this.procWritePending().then(function () {
         return this.procCallPending();
     }.bind(this)).then(function () {
         return this.procReadRegs(this.autoReadMaps || {});
     }.bind(this)).catch((e)=>{
-        console.error('error',e.message||e);
+        console.error('WritePending error',e.message||e);
     });
 };
 
