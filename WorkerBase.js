@@ -998,6 +998,10 @@ WorkerBase.prototype.CreateWQWriter = function (mapItem, values, regWriter) {
         return results;
     })
 };
+process.on('uncaughtException',function(e){
+    console.error(e && e.stack);
+
+})
 module.exports = WorkerBase;
 
 
