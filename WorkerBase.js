@@ -108,7 +108,25 @@ function WorkerBase(maxSegLength, minGapLength) {
                 break;
 
             default:
-                console.error('error message:', JSON.stringify(msg));
+                //默认转发命令
+                if(this[msg.cmd]){
+                    Q().then(()=>{
+                        return this[msg.cmd](msg)
+                    }).then((result)=>{
+                        if(msg.uuid){
+                            this.SendExecResponse(msg.cmd, msg.uuid, {success:true,result:result});
+                        }
+                    }).catch((e)=>{
+                        if(msg.uuid){
+                            this.SendExecResponse(msg.cmd, msg.uuid, {success:false,reason:e.message ||e});
+                        }
+                    })
+
+                }
+                else {
+
+                    console.error('error message:', JSON.stringify(msg));
+                }
                 break;
         }
     }.bind(this));
